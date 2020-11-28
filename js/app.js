@@ -7,9 +7,10 @@ const $btnTheme = document.getElementById('btn-theme'),
 	$todoLeft = document.getElementById('todo-left'),
 	$todoFooter = document.getElementById('todo-footer');
 
-let todoList = [];
+const sortable = Sortable.create($todoList);
+console.log(sortable);
 
-const $listItems = [];
+let todoList = JSON.parse(localStorage.getItem('todoList')) || [];
 
 const toggleTheme = () => {
 	const isDark = document.body.classList.toggle('dark');
@@ -22,14 +23,15 @@ const toggleTheme = () => {
 	localStorage.setItem('theme', isDark);
 };
 
-const addTodo = (text, id) => {
+const addTodo = (text, id, completed) => {
 	const todo = document.createElement('li');
-	todo.className = 'todo__item';
+	todo.className = `todo__item ${completed ? 'todo__item--completed' : ''}`;
 	todo.setAttribute('data-id', id);
 	todo.innerHTML = `
   <label class="checkbox">
     <input
       type="checkbox"
+      ${completed ? 'checked' : ''}
       class="checkbox__hide"
       aria-label="Check todo"
     />
@@ -51,6 +53,16 @@ const addTodo = (text, id) => {
   </button>
   `;
 	$todoList.appendChild(todo);
+};
+
+const addTodos = () => {
+	todoList.forEach(({ text, id, completed }) => {
+		addTodo(text, id, completed);
+	});
+};
+
+const saveTodos = () => {
+	localStorage.setItem('todoList', JSON.stringify(todoList));
 };
 
 const getCountItemsLeft = () => {
@@ -97,6 +109,7 @@ const handleSubmit = (e) => {
 	todoList.push({ id, text: value, completed: false });
 	updateLeftLegend();
 	$form.reset();
+	saveTodos();
 };
 
 const markAsCompleted = (todo) => {
@@ -122,11 +135,13 @@ const handleTodoClick = ({ target }) => {
 	const isCheck = target.classList.contains('checkbox__hide');
 	if (isCheck) {
 		markAsCompleted(todo);
+		saveTodos();
 		return;
 	}
 	const isDelete = target.closest('.todo__delete');
 	if (isDelete) {
 		deleteTodo(todo);
+		saveTodos();
 	}
 };
 
@@ -137,6 +152,7 @@ const clearCompleted = () => {
 		}
 	});
 	todoList = todoList.filter(({ completed }) => completed === false);
+	saveTodos();
 };
 
 const markCurrentFilter = (filters, currentFilter) => {
@@ -191,5 +207,9 @@ document.addEventListener('DOMContentLoaded', () => {
 	const mql = matchMedia('(prefers-color-scheme: dark)');
 	if ((mql.matches && isDark) || (mql.matches && isDark === null)) {
 		toggleTheme();
+	}
+	if (todoList.length > 0) {
+		addTodos();
+		updateLeftLegend();
 	}
 });

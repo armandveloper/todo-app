@@ -157,6 +157,7 @@ body.dark .header {
 }
 .todo__item {
 	color: var(--color-todo);
+	cursor: pointer;
 	padding: 2rem;
 	display: grid;
 	grid-template-columns: min-content 1fr min-content;
@@ -209,7 +210,6 @@ body.dark .header {
 	}
 }
 .todo__text {
-	cursor: pointer;
 	font-size: 1.6rem;
 	margin: 0;
 	transition: color 0.3s;
