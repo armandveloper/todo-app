@@ -46,9 +46,14 @@ body.dark {
 	padding: 0 2rem;
 	width: 100%;
 }
-.header {
-	background: url(../img/bg-mobile-light.jpg) center center / cover no-repeat;
+header {
+	background-position: center center;
+	background-size: cover;
+	background-repeat: no-repeat;
 	padding: 4rem 0 6rem;
+}
+body.light .header {
+	background-image: url(../img/bg-mobile-light.jpg);
 }
 body.dark .header {
 	background-image: url(../img/bg-mobile-dark.jpg);
@@ -57,7 +62,7 @@ body.dark .header {
 	.header {
 		padding: 8rem 10rem;
 	}
-	body:not(.dark) .header {
+	body.light .header {
 		background-image: url(../img/bg-desktop-light.jpg);
 	}
 	body.dark .header {

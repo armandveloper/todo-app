@@ -7,20 +7,41 @@ const $btnTheme = document.getElementById('btn-theme'),
 	$todoLeft = document.getElementById('todo-left'),
 	$todoFooter = document.getElementById('todo-footer');
 
-const sortable = Sortable.create($todoList);
-console.log(sortable);
+Sortable.create($todoList);
 
 let todoList = JSON.parse(localStorage.getItem('todoList')) || [];
 
-const toggleTheme = () => {
-	const isDark = document.body.classList.toggle('dark');
+const applyTheme = (theme) => {
 	const icon = $btnTheme.firstElementChild;
-	if (isDark) {
+	document.body.classList.remove(theme === 'dark' ? 'light' : 'dark');
+	document.body.classList.add(theme);
+	if (theme === 'dark') {
 		icon.src = 'img/icon-sun.svg';
 	} else {
 		icon.src = 'img/icon-moon.svg';
 	}
-	localStorage.setItem('theme', isDark);
+};
+
+const toggleTheme = () => {
+	const isDark = document.body.classList.contains('dark');
+	applyTheme(isDark ? 'light' : 'dark');
+	localStorage.setItem('theme', !isDark);
+};
+
+const changeThemeIcon = ({ matches }) => {
+	// Si el tema se ha elegido, no hace nada
+	if (localStorage.getItem('theme') !== null) {
+		return;
+	}
+	// No hay un tema elegido, así que aplica la preferencia del sistema
+	const icon = $btnTheme.firstElementChild;
+	if (matches) {
+		applyTheme('dark');
+		icon.src = 'img/icon-sun.svg';
+	} else {
+		applyTheme('light');
+		icon.src = 'img/icon-moon.svg';
+	}
 };
 
 const addTodo = (text, id, completed) => {
@@ -203,11 +224,15 @@ $form.addEventListener('submit', handleSubmit);
 $todoList.addEventListener('click', handleTodoClick);
 $todoFooter.addEventListener('click', handleFooterClick);
 document.addEventListener('DOMContentLoaded', () => {
-	const isDark = JSON.parse(localStorage.getItem('theme')) || null;
+	const isDark = JSON.parse(localStorage.getItem('theme'));
 	const mql = matchMedia('(prefers-color-scheme: dark)');
-	if ((mql.matches && isDark) || (mql.matches && isDark === null)) {
-		toggleTheme();
+	if (isDark === null) {
+		applyTheme(mql.matches ? 'dark' : 'light');
+	} else {
+		applyTheme(isDark ? 'dark' : 'light');
 	}
+	// Escucha cambios en la preferencia de color del S.O. para cambiar el icono y aplicar el nuevo tema
+	mql.addListener(changeThemeIcon);
 	if (todoList.length > 0) {
 		addTodos();
 		updateLeftLegend();
