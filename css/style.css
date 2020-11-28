@@ -131,14 +131,10 @@ body.dark .header {
 .todo__list {
 	background: var(--color-bg-elements);
 	border-radius: 1rem 1rem 0 0;
-	height: 30rem;
 	list-style: none;
 	margin: 0;
 	margin-top: -4rem;
 	padding: 0;
-	overflow-y: auto;
-	scrollbar-color: var(--color-border-circle) var(--color-bg-elements);
-	scrollbar-width: thin;
 }
 .todo__list::-webkit-scrollbar {
 	width: 5px;
@@ -153,6 +149,9 @@ body.dark .header {
 @media (min-width: 75em) {
 	.todo__list {
 		height: 35rem;
+		overflow-y: auto;
+		scrollbar-color: var(--color-border-circle) var(--color-bg-elements);
+		scrollbar-width: thin;
 	}
 }
 .todo__item {
